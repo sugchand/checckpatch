@@ -1,7 +1,10 @@
 #! /usr/bin/python3
 # -*- coding: utf8 -*-
 #
-# The patch apply script to download and apply patches cleanly on a repo. 
+# **** NOT A MULTI-THREADED APPLICATION. NEVER TRY TO RUN THE MULTIPLE INSTANCE
+# **** OF SCRIPT. CAN CAUSE UNPREDICTABLE ISSUES WITH MERGING.
+#
+# The script to download and apply patches on a given repo.
 # It does the following
 # 1. Download patches on local-machine at LOCAL_PATCH_DIR
 # 2. Copy the patches to remote machine, into the remote repo
