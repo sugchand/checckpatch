@@ -205,28 +205,35 @@ class linux_checkpatch():
 
     def set_env_params(self, args):
         global ENV_PARAMS
-    # Is it Mutt/patchwork to generate the patch??
-        if not args.MUTT_EXE and not args.PATCHWORK_URL:
-            print("Please select either mutt/patchwork by -m or -p")
-            return
-        if args.MUTT_EXE and args.PATCHWORK_URL:
-            print("Cannot use mutt and patchwork together, Exiting...")
-            return
-        ENV_PARAMS = vars(args)
-        if args.MUTT_EXE:
-            ENV_PARAMS['PATCHWORK_URL'] = None
-        elif args.PATCHWORK_URL:
-            ENV_PARAMS['MUTT_EXE'] = None
+        try:
+            # Is it Mutt/patchwork to generate the patch??
+            if not args.MUTT_EXE and not args.PATCHWORK_URL:
+                print("Please select either mutt/patchwork by -m or -p")
+                raise SyntaxError
+            if args.MUTT_EXE and args.PATCHWORK_URL:
+                print("Cannot use mutt and patchwork together, Exiting...")
+                raise SyntaxError
+            ENV_PARAMS = vars(args)
+            if args.MUTT_EXE:
+                ENV_PARAMS['PATCHWORK_URL'] = None
+            elif args.PATCHWORK_URL:
+                ENV_PARAMS['MUTT_EXE'] = None
+        except Exception as e:
+            raise e
+
 
     def run_apply_patch(self, args):
-        self.set_env_params(args)
-        # Snapshot the stat of directory for reference.
-        old_stat_dic = get_directory_stat_local(ENV_PARAMS['LOCAL_PATCH_DIR'])
-        self.open_user_mbox_app()
-        new_stat_dic = get_directory_stat_local(ENV_PARAMS['LOCAL_PATCH_DIR'])
-        print(new_stat_dic)
-        diff_file_list = compare_dir_dic(old_stat_dic, new_dir_stat=new_stat_dic)
-        print(diff_file_list)
+        try:
+            self.set_env_params(args)
+            # Snapshot the stat of directory for reference.
+            old_stat_dic = get_directory_stat_local(ENV_PARAMS['LOCAL_PATCH_DIR'])
+            self.open_user_mbox_app()
+            new_stat_dic = get_directory_stat_local(ENV_PARAMS['LOCAL_PATCH_DIR'])
+            print(new_stat_dic)
+            diff_file_list = compare_dir_dic(old_stat_dic, new_dir_stat=new_stat_dic)
+            print(diff_file_list)
+        except:
+            print("Failed to apply patch.")
 
 class windows_checkpatch():
     def __init__(self):
